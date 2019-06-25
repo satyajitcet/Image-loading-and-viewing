@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <style>
+body {background-color: powderblue;}
+h1   {color: blue;}
+p    {color: red;}
+img {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 150px;
+}
+</style>
+  <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <!-- Load Babel -->
+<!-- v6 <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <meta charset="utf-8">
+    <title>React Test</title>
+  </head>
+  <body>
+   <div id = 'root'></div>
+   <script type="text/babel">
+   const Display = (props) => {
+  return ( <div >
+         <img src = {props.linke} />
+          </div>
+         );
+}
+const Move = (props) => {
+  
+  
+    return (
+      <div>
+      <button onClick = {props.prevHandler} disabled={props.flag === -1}>Prev</button>
+      <button onClick = {props.nextHandler} disabled={props.flag === 1}>Next</button>
+    </div>);
+  
+}
+
+   
+   class Welcome extends React.Component {
+   constructor(props) {
+    super(props);
+    this.state = {
+      item :[],
+      flag:-1,
+      counter:0
+    };
+  }
+  nextHandler = (e) =>{
+  if(this.state.counter < this.state.item.length - 1){
+  let count = this.state.counter + 1;
+   let newFlag = 0;
+  if(count === this.state.item.length - 1){
+   newFlag = 1;
+  }
+  this.setState({counter:count,flag:newFlag});
+  };
+  };
+  prevHandler = (e) =>{
+  if(this.state.counter > 0){
+  let count = this.state.counter -1;
+  let newFlag = 0;
+  if(count === 0){
+   newFlag = -1;
+  }
+  this.setState({counter:count,flag:newFlag});
+  };
+  }
+  render() {
+	let dis = null;
+	if(this.state.item.length > 0) {
+	dis = <Display linke = {this.state.item[this.state.counter].url}/>;
+	}
+    return (
+	<div>
+	<h1>
+	Hello, {this.props.name}
+	</h1>
+	{dis}
+    <Move flag = {this.state.flag} nextHandler = {this.nextHandler} prevHandler = {this.prevHandler} />
+	
+	</div>
+	);
+  }
+  componentDidMount(){
+    console.log('didmount');
+    axios.get('http://www.splashbase.co/api/v1/images/latest')
+      .then(res => {
+        const persons = res.data;
+      console.log(persons);
+        this.setState({item:persons.images });
+      })
+  }
+}
+const element = <Welcome name="Sara" />;
+ReactDOM.render(element,document.getElementById('root'));
+   </script>
+  </body>
+</html>
