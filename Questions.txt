@@ -1,0 +1,1 @@
+Q1. What is event bubbling and event capturing in Javascript?
